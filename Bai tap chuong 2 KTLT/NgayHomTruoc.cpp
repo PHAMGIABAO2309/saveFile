@@ -1,107 +1,86 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
-
-
-int N[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-struct date
-{	
-	int ngay;int thang;int nam;
+int N[] = { 0,31,28,31,30,31,30,31,31,30,31,30,31};
+struct DATE
+{
+	int day, month, year;
 };
-
-
-//Ham Kiem Tra Nam Nhuan
-int KTNN(date x)
+//kt nam nhuan
+int ktnamnhuan(DATE &x)
 {
-	if((x.nam%4 == 0) && (x.nam%100!=0 || x.nam%400==0))
-	{
-		x.nam+=1;
-		return 1;	
-	}
-	return 0;
+	return ( (x.year % 4 == 0) && (x.year%100 != 0 || x.year%400 == 0));
 }
-//Ham Kiem Tra Hop Le
-int KTHL(date x)
+int kthople(DATE &x)
 {
-	if(KTNN(x))
-		N[2] = 29;
-	if(!(x.ngay >=1 && x.ngay <= N[x.thang]))
-		return 0;
-	if(!(x.thang >=1 && (x.thang <=12)))
-		return 0;
+	if(ktnamnhuan(x))
+	{
+		N[2] = 28;
+		if( !(x.day>=1 && x.day <= N[x.month]))
+		{
+			return 0;
+		}
+		if ( !(x.month >=1 && x.month <= 12))
+		{
+			return 0;
+		}
+	}
 	return 1;
 }
-//Ham Nhap
-void Nhap(date &x)
+void Nhap(DATE &x)
 {
-	do{
-		cout << "Nhap DD/MM/YYYY:\n";
-		cout << "Day:"; cin >> x.ngay;
-		cout << "Month:"; cin >> x.thang;
-		cout << "Year:"; cin >> x.nam;
-	}while(!KTHL(x));
+	do
+	{
+		cout<<"Nhap ngay: "; cin>>x.day;
+		cout<<"\n Nhap thang: "; cin>>x.month;
+		cout<<"\n Nhap nam: "; cin>>x.year;
+	} while ( !(kthople(x)) );
 }
-//Ham Xuat
-void Xuat(date x)
+void Xuat(DATE &x)
 {
-	string strngay = to_string(x.ngay);
-	if(strngay.size() == 1)
-		strngay = '0' + strngay;
-	string strthang = to_string(x.thang);
-	if(strthang.size() ==1)
-		strthang = '0' + strthang;	
-	cout << "Ngay Vua Nhap: " << strngay << "/" << strthang << "/" << x.nam;
+	cout<<x.day<<"/"<<x.month<<"/"<<x.year;
 }
-
-void XuatNgayHomTruoc(date x)
+DATE NGAYTHUONG(DATE x)
 {
-	string strngay = to_string(x.ngay);
-	if(strngay.size() == 1)
-		strngay = '0' + strngay;
-	string strthang = to_string(x.thang);
-	if(strthang.size() == 1)
-		strthang = '0' + strthang;
-	cout << "\nNgay Hom Truoc: " << strngay << "/" << strthang << "/" << x.nam;
+	DATE KQ;
+	if( x.day > 1 )
+		KQ = { x.day - 1,x.month,x.year};
+		return KQ;
 }
-//Ham Ngay Thuong
-date NgayThuong(date x)
+DATE NGAYDAUTHANG(DATE x)
 {
-	date kq = {x.ngay-1,x.thang,x.nam};
-	return kq;
+	DATE KQ;
+	if(x.month > 1)
+		KQ = { N[x.month - 1],x.month -1,x.year};
+		return KQ;
 }
-//Ham Ngay Dau Thang
-date NgayDauThang(date x)
+DATE NGAYDAUNAM(DATE x)
 {
-	date kq = {N[x.thang-1] , x.thang-1 , x.nam};
-	return kq;
+	DATE KQ = { N[12],12,x.year -1};
+	return KQ;
 }
-//Ham Ngay Dau Nam
-date NgayDauNam(date x)
+DATE TIMNGAYHOMTRUOC(DATE x)
 {
-	date kq = {N[12],12,x.nam-1};
-	return kq;
+	if ( ( x.day == 1) && (x.month == 1) )
+	{
+		return NGAYDAUNAM(x);
+	}
+	if ( x.day == 1)
+	{
+		return NGAYDAUTHANG(x);
+	}
+	else
+	{
+		return NGAYTHUONG(x);
+	}
 }
-
-//Ham tim ngay truoc
-date TimNgayHomTruoc(date x)
-{
-    if ((x.ngay == 1) && (x.thang == 1))
-        return NgayDauNam(x);
-    if(x.ngay ==1)
-    	return NgayDauThang(x);
-    return NgayThuong(x);
-}
-
-//Ham Chinh
 int main()
 {
-	date x;
-	date NgayHomTruoc;
+	DATE x;
+	DATE NGAYHOMTRUOC;
 	Nhap(x);
-	KTNN(x); // Kiem tra YEAR 
-	NgayHomTruoc = TimNgayHomTruoc(x);
 	Xuat(x);
-	XuatNgayHomTruoc(NgayHomTruoc);
+	cout<<"\n";
+	ktnamnhuan(x);
+	NGAYHOMTRUOC = TIMNGAYHOMTRUOC(x);
+	Xuat(NGAYHOMTRUOC);
 }
-
-
-
